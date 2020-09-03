@@ -1,0 +1,216 @@
+﻿<div id="footer">
+
+    <div id="toggle_footer">
+        <span class="glyphicon glyphicon-menu-down"></span>
+    </div>
+
+    <div class="row footer-sliders">
+
+        <div class="col-sm-4">
+            <div id="hue_icon"></div>
+            <div id="hue_slider"></div>
+        </div>
+        <div class="col-sm-4" id="swatch_size_panel">
+            <div id="swatch_triangle_container"><div id="swatch_triangle_icon"></div></div>
+
+            <div id="swatch_size_slider"></div>
+        </div>
+        <div class="col-sm-4">
+            <div id="saturation_icon"></div>
+            <div id="saturation_slider"></div>
+        </div>
+
+
+    </div>
+
+    <br />
+</div>
+
+
+<script>
+
+    var footer = true;
+
+    var width = window.width;
+
+    window.onresize = function (e) {
+
+        var newWidth = document.documentElement.clientWidth
+
+        if (newWidth > 800 && width <= 800)
+        {
+            if (!footer)
+            {
+                $('#footer').css("bottom", "-100px");
+            }
+        }
+
+
+
+
+        width = newWidth;
+    }
+
+
+
+    $('#toggle_footer').click(function () {
+
+        if (footer) {
+
+            if (document.documentElement.clientWidth < 768) {
+                $('#footer').animate({
+                    bottom: "-260px"
+                }, 500, function () {
+                    footer = false;
+                });
+            }
+            else {
+                $('#footer').animate({
+                    bottom: "-100px"
+                }, 500, function () {
+                    footer = false;
+                });
+            }
+
+
+        }
+        else {
+            $('#footer').animate({
+                bottom: "0px"
+            }, 500, function () {
+                footer = true;
+            });
+        }
+
+
+        $('.glyphicon-menu-down').toggleClass("spin");
+
+    });
+
+    $('#swatch_size_slider').slider({
+        orientation: "horizontal",
+        range: "min",
+        min: 127,
+        max: 273,
+        value: 200,
+        slide: refreshSwatch
+    });
+
+    function refreshSwatch() {
+        var newSize = $('#swatch_size_slider').slider("value");
+
+        $(".swatch").css("height", newSize + "px");
+        $(".swatch").css("width", newSize + "px");
+
+
+        $(".swatch h3").css("font-size", newSize / 100 + "em");
+        $(".swatch h4, .swatch h5").css("font-size", newSize / 150 + "em");
+        $(".swatch h6").css("font-size", newSize / 225 + "em");
+    }
+
+    $('#hue_slider').slider({
+        orientation: "horizontal",
+        range: "min",
+        min: -45,
+        max: 45,
+        value: 0,
+        slide: refreshHue
+    });
+
+    function refreshHue() {
+
+        var swatches = document.getElementsByClassName("swatch");
+
+
+        for (var i = 0; i < swatches.length; i++) {
+
+            var swatch_hex = swatches[i].getElementsByClassName('swatch_hex');
+            var swatch_red = swatches[i].getElementsByClassName('swatch_red');
+            var swatch_green = swatches[i].getElementsByClassName('swatch_green');
+            var swatch_blue = swatches[i].getElementsByClassName('swatch_blue');
+
+            var newHue = $("#hue_slider").slider("value") + surfacecurve.color(swatches[i].style.background).hue();
+
+            if (parseInt(newHue) > 359)
+            {
+                newHue = newHue - 360;
+            }
+
+            var newColor = surfacecurve.color(swatches[i].style.background).hue(newHue);
+
+            var newColorHex = newColor.hex6().toUpperCase();
+
+
+            swatches[i].style.background = newColorHex;
+
+            swatch_hex[0].innerHTML = newColorHex;
+            swatch_red[0].innerHTML = "R: " + newColor.red();
+            swatch_green[0].innerHTML = "G: " + newColor.green();
+            swatch_blue[0].innerHTML = "B: " + newColor.blue();
+
+        }
+    }
+
+    function rgbToHsl(r, g, b) {
+        r /= 255, g /= 255, b /= 255;
+        var max = Math.max(r, g, b), min = Math.min(r, g, b);
+        var h, s, l = (max + min) / 2;
+
+        if (max == min) {
+            h = s = 0; // achromatic
+        } else {
+            var d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+        }
+
+        return [h, s, l];
+    }
+
+    $('#saturation_slider').slider({
+        orientation: "horizontal",
+        range: "min",
+        min: 0,
+        max: 64,
+        value: 32,
+        slide: refreshSaturation
+    });
+
+    function refreshSaturation() {
+
+        var swatches = document.getElementsByClassName("swatch");
+
+
+        for (var i = 0; i < swatches.length; i++) {
+
+            var swatch_hex = swatches[i].getElementsByClassName('swatch_hex');
+            var swatch_red = swatches[i].getElementsByClassName('swatch_red');
+            var swatch_green = swatches[i].getElementsByClassName('swatch_green');
+            var swatch_blue = swatches[i].getElementsByClassName('swatch_blue');
+
+            var newSaturation = $("#saturation_slider").slider("value");
+
+
+            var newColor = surfacecurve.color(swatches[i].style.background).saturation(newSaturation);
+
+            var newColorHex = newColor.hex6().toUpperCase();
+
+
+            swatches[i].style.background = newColorHex;
+
+            swatch_hex[0].innerHTML = newColorHex;
+            swatch_red[0].innerHTML = "R: " + newColor.red();
+            swatch_green[0].innerHTML = "G: " + newColor.green();
+            swatch_blue[0].innerHTML = "B: " + newColor.blue();
+
+        }
+    }
+
+
+
+</script>

@@ -1,0 +1,34 @@
+﻿@model Palette_Project.Models.Website
+
+
+
+<div class="jumbotron-whole">
+    @using (Html.BeginForm("CheckSite", "Home", FormMethod.Post, new { id = "form" }))
+    {
+
+        <div class="jumbotron-back">
+        </div>
+        <div class="jumbotron-search">
+            @if (this.Url.RequestContext.HttpContext.Request.RawUrl.Equals("/"))
+            {
+                <label for="url-input" id="url-input-label">Enter a URL:</label>
+            }
+            else
+            {
+                <label for="url-input" id="url-input-label">URL:</label>
+            }
+            <span class="index-error">@ViewBag.Error</span>
+            <div>
+                <div class="url-input">@Html.TextBoxFor(Model => Model.url, new { required = true, autofocus = true, id = "url-input" })</div>
+                
+                    <button type="submit" class="btn btn-default submit-button">
+                        <i class="glyphicon glyphicon-arrow-right"></i>
+                    </button>
+            </div>
+        </div>
+
+        
+
+    }
+</div>
+

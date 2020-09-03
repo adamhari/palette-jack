@@ -1,0 +1,142 @@
+﻿@model Palette_Project.Models.Website
+
+@{
+    ViewBag.Title = Model.url;
+}
+
+@Html.Partial("_Searchbox", Model)
+
+<br />
+
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <a role="button" data-toggle="collapse" href="#collapseOne"
+           aria-expanded="true" aria-controls="collapseOne">
+            <div class="panel-heading" role="tab" id="headingOne">
+                <h4 class="panel-title">
+
+                    Stylesheets Parsed
+
+                </h4>
+
+                <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        @foreach (var sheet in Model.stylesheets)
+                        {
+                            <a href="@sheet.Attributes["href"].Value" target="_blank">@sheet.Attributes["href"].Value</a>
+
+                            <br />
+                        }
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        
+    </div>
+
+    <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingTwo">
+                <a role="button" data-toggle="collapse" href="#collapseTwo"
+                   aria-expanded="true" aria-controls="collapseTwo">
+                    <h4 class="panel-title">
+
+                        Excluded Stylesheets
+
+                    </h4>
+                </a>
+
+                <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                    <div class="panel-body">
+                        @foreach (var sheet in Model.excludedStylesheets)
+                        {
+                            <a href="@sheet.Attributes["href"].Value" target="_blank">@sheet.Attributes["href"].Value</a>
+
+                                <br />
+                        }
+
+                        @if (Model.excludedStylesheets.Count == 0)
+                        {
+                            <text>No stylesheets were excluded for this website.</text>
+                        }
+
+                        <br />
+                        Generic stylesheets like <span style="font-style:italic">bootstrap.css</span> are excluded to provide for a more accurate color palette.
+                    </div>
+                </div>
+
+</div>
+        
+
+        
+    </div>
+
+    <div class="panel panel-default">
+
+        <a role="button" data-toggle="collapse" href="#collapseThree"
+           aria-expanded="true" aria-controls="collapseThree">
+            <div class="panel-heading" role="tab" id="headingThree">
+                <h4 class="panel-title">
+
+                    Colors
+                </h4>
+
+
+                <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThree">
+                    <div class="panel-body colors-panel">
+
+
+
+
+
+                        @foreach (var websiteColor in Model.websiteColors)
+                        {
+                            if (!websiteColor.getSelectorsString().Equals(""))
+                            {
+                                var hex = websiteColor.getHex();
+
+                                <a href="http://www.color-hex.com/color/@(hex.Substring(1, hex.Length - 1))" target="_blank">
+                                    <div class="swatch" style="background:@(hex);" title="Selectors" data-toggle="popover" data-content="@websiteColor.getSelectorsString()" data-trigger="hover">
+
+                                        <h6>&nbsp;</h6>
+                                        <h6>&nbsp;</h6>
+                                        <h6>&nbsp;</h6>
+                                        <h3 class="swatch_hex">@(hex)</h3>
+                                        <h6>&nbsp;</h6>
+                                        <h4 class="swatch_red">R: @websiteColor.getR()</h4>
+                                        <h4 class="swatch_green">G: @websiteColor.getG()</h4>
+                                        <h4 class="swatch_blue">B: @websiteColor.getB()</h4>
+                                        <h6>&nbsp;</h6>
+
+                                    </div>
+                                </a>
+                            }
+                        }
+                    </div>
+                </div>
+
+
+
+            </div>
+        </a>
+
+    </div>
+</div>
+
+
+@*@Html.Partial("_FooterToolbar")*@
+
+<script>
+
+    $('.swatch').mouseover(function () {
+        $(this).css('text-shadow', '1px 1px 4px #000, 0px 0px 8px rgba(255,255,255,0.25)');
+        $(this).css('-webkit-stroke', '1px rgba(0,0,0,0.5)');
+    });
+
+    $('.swatch').mouseleave(function () {
+        $(this).css('text-shadow', '1px 1px 2px #000');
+        $(this).css('-webkit-stroke', 'none');
+    });
+
+
+</script>
